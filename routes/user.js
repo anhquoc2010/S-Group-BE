@@ -1,5 +1,6 @@
 import { Router } from 'express';
 const user_router = Router();
+import { validateRequest } from '../middleware/validateRequest.js';
 export { user_router };
 
 const users = [
@@ -31,7 +32,7 @@ user_router.get('/:id', (req, res) => {
     }
 })
 
-user_router.put('/:id', (req, res) => {
+user_router.put('/:id', validateRequest, (req, res) => {
     const user = users.find(user => user.id == req.params.id)
     user.fullname = req.body.fullname
     user.gender = req.body.gender
@@ -39,9 +40,9 @@ user_router.put('/:id', (req, res) => {
     res.status(204).end()
 })
 
-user_router.post('/', (req, res) => {
+user_router.post('/', validateRequest, (req, res) => {
     const user = {
-        id: users.length + 1,
+        id: users[users.length - 1].id + 1,
         fullname: req.body.fullname,
         gender: req.body.gender,
         age: req.body.age
