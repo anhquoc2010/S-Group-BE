@@ -1,32 +1,11 @@
 import { Router } from 'express'
 const user_router = Router()
-import { validateRequest } from '../middleware/validateRequest.js'
+// import { validateRequest } from '../middleware/validateRequest.js'
 import { db } from '../database/connection.js'
 import { hashPassword, verifyToken } from '../helpers/hash.js'
 
 export { user_router }
 
-user_router.get('/', (req, res) => {
-    db.query('SELECT * FROM user', (err, rows) => {
-        if (err) {
-            console.log(err)
-        } else {
-            res.status(200).json(rows)
-        }
-    })
-})
-
-user_router.get('/:id', (req, res) => {
-    db.query('SELECT * FROM user WHERE id = ?', [req.params.id], (err, rows) => {
-        if (err) {
-            console.log(err)
-        } else {
-            res.status(200).json(rows)
-        }
-    })
-})
-
-//update user check token
 user_router.put('/:id', (req, res) => {
     if (!req.headers.authorization) {
         return res.status(401).json({
@@ -66,22 +45,33 @@ user_router.put('/:id', (req, res) => {
     }
 })
 
-user_router.post('/', validateRequest, (req, res) => {
-    db.query('INSERT INTO user SET ?', req.body, (err, rows) => {
-        if (err) {
-            console.log(err)
-        } else {
-            res.status(201).json(rows)
-        }
-    })
-})
-
 user_router.delete('/:id', (req, res) => {
-    db.query('DELETE FROM user WHERE id = ?', [req.params.id], (err, rows) => {
-        if (err) {
-            console.log(err)
-        } else {
-            res.status(200).json(rows)
-        }
-    })
+    if (!req.headers.authorization) {
+        return res.status(401).json({
+            message: 'You are not authorized'
+        })
+    }
+    const token = req.headers.authorization.split(' ')[1]
+
+    try {
+        var decoded = verifyToken(token)
+    } catch (err) {
+        return res.status(401).json({
+            error: err
+        })
+    }
+
+    if (decoded.id === parseInt(req.params.id)) {
+        db.query('DELETE FROM users WHERE id = ?', [req.params.id], (err, rows) => {
+            if (err) {
+                console.log(err)
+            } else {
+                res.status(200).json(rows)
+            }
+        })
+    } else {
+        res.status(403).json({
+            message: 'You are not allowed to delete this user'
+        })
+    }
 })
