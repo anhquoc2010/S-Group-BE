@@ -1,16 +1,17 @@
 import { db } from './connection.js'
 
-const creatSql = `CREATE TABLE user (
-    id INT NOT NULL AUTO_INCREMENT,
-    fullname VARCHAR(255) NOT NULL,
-    gender BOOLEAN,
+const creatSql = `CREATE TABLE users (
+    id INT AUTO_INCREMENT,
+    username VARCHAR(255),
+    password VARCHAR(255),
+    salt VARCHAR(255),
+    name VARCHAR(255),
     age INT UNSIGNED,
-    PRIMARY KEY (id)
+    gender BOOLEAN,
+    email VARCHAR(255),
+    PRIMARY KEY (id),
+    UNIQUE (username)
 )`
-
-const seedSql = `INSERT INTO user(fullname, gender, age)
-    VALUES ('Nguyen Huy Tuong', true, 18),
-    ('Nguyen Thi Tuong', false, 15)`
 
 db.query(creatSql, (err) => {
     if (err) {
