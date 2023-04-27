@@ -5,7 +5,7 @@ dotenv.config()
 const app = express()
 const port = process.env.PORT
 
-import { user_router } from './routes/user.js'
+import { user_router } from './routes/users.js'
 import { auth_router } from './routes/auth.js'
 
 app.use(json())
@@ -16,6 +16,6 @@ app.listen(port, () => {
     console.log('Server is running on port ' + port)
 })
 
-app.use('/user', user_router)
+app.use('/users', user_router)
 
 app.use('/auth', auth_router)

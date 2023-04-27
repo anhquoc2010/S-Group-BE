@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const auth_router = Router();
 import { db } from '../database/connection.js';
-import { hashPassword, comparePassword } from '../helpers/hash.js';
+import { hashPassword, comparePassword, signToken } from '../helpers/hash.js';
 
 export { auth_router };
 
@@ -99,8 +99,18 @@ auth_router.post('/login', async (req, res) => {
                 });
             }
 
+            const token = signToken({
+                id: user.id,
+                username: user.username,
+                name: user.name,
+                age: user.age,
+                email: user.email,
+                gender: user.gender,
+            });
+
             return res.status(200).json({
-                message: 'Login successfully'
+                message: 'Login successfully',
+                token,
             });
         }
     );
