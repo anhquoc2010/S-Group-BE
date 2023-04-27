@@ -28,8 +28,21 @@ user_router.get('/:id', (req, res) => {
 
 //update user check token
 user_router.put('/:id', (req, res) => {
+    if (!req.headers.authorization) {
+        return res.status(401).json({
+            message: 'You are not authorized'
+        })
+    }
     const token = req.headers.authorization.split(' ')[1]
-    const decoded = verifyToken(token)
+
+    try {
+        var decoded = verifyToken(token)
+    } catch (err) {
+        return res.status(401).json({
+            error: err
+        })
+    }
+
     if (decoded.id === parseInt(req.params.id)) {
         const {
             hashedPassword,
@@ -38,7 +51,7 @@ user_router.put('/:id', (req, res) => {
 
         req.body.password = hashedPassword
         req.body.salt = salt
-            
+
         db.query('UPDATE users SET ? WHERE id = ?', [req.body, req.params.id], (err, rows) => {
             if (err) {
                 console.log(err)

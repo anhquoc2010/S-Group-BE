@@ -24,7 +24,7 @@ auth_router.post('/register', async (req, res) => {
                     error: err
                 });
             }
-            
+
             const user = rows[0];
 
             if (user) {
@@ -39,7 +39,7 @@ auth_router.post('/register', async (req, res) => {
             } = hashPassword(password);
 
             console.log({ hashedPassword, salt });
-            
+
             db.query('INSERT INTO users SET ?', {
                 username,
                 password: hashedPassword,
@@ -99,14 +99,7 @@ auth_router.post('/login', async (req, res) => {
                 });
             }
 
-            const token = signToken({
-                id: user.id,
-                username: user.username,
-                name: user.name,
-                age: user.age,
-                email: user.email,
-                gender: user.gender,
-            });
+            const token = signToken(user);
 
             return res.status(200).json({
                 message: 'Login successfully',
