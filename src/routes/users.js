@@ -43,7 +43,7 @@ user_router.put('/:id', (req, res) => {
             message: 'You are not allowed to update this user'
         })
     }
-})
+});
 
 user_router.delete('/:id', (req, res) => {
     if (!req.headers.authorization) {
@@ -74,4 +74,4 @@ user_router.delete('/:id', (req, res) => {
             message: 'You are not allowed to delete this user'
         })
     }
-})
+});

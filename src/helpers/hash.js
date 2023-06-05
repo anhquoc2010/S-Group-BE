@@ -15,7 +15,10 @@ function hashPassword(plainPassword) {
 }
 
 function comparePassword(plainPassword, hashedPassword, salt) {
+    console.log({ plainPassword, hashedPassword, salt });
     const hash = crypto.pbkdf2Sync(plainPassword, salt, 1000, 64, 'sha1').toString('hex');
+
+    console.log({ hash, hashedPassword });
 
     return hash === hashedPassword;
 }
@@ -34,7 +37,17 @@ function signToken(user) {
     return token
 }
 
-function verifyToken(token) {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    return decoded
+function verifyToken(req, res, next) {
+    const token = req.headers.authorization.split(' ')[1]
+
+    try {
+        var decoded = jwt.verify(token, process.env.JWT_SECRET)
+    } catch (err) {
+        return res.status(401).json({
+            error: err
+        })
+    }
+
+    req.decoded = decoded
+    next()
 }

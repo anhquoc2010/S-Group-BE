@@ -9,6 +9,14 @@ const creatSql = `CREATE TABLE users (
     age INT UNSIGNED,
     gender BOOLEAN,
     email VARCHAR(255),
+    passwordResetToken VARCHAR(255),
+    passwordResetExpiration DATETIME,
+    passwordLastResetDate DATETIME,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    createdBy INT,
+    FOREIGN KEY (createdBy) REFERENCES users(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
     PRIMARY KEY (id),
     UNIQUE (username)
 )`
