@@ -8,6 +8,7 @@ const port = process.env.PORT
 import { user_router } from './routes/users.js'
 import { auth_router } from './routes/auth.js'
 import { management } from './routes/management.js'
+import { vote } from './routes/vote.js'
 
 app.use(json())
 
@@ -22,3 +23,5 @@ app.use('/users', user_router)
 app.use('/auth', auth_router)
 
 app.use('/management', management)
+
+app.use('/vote', vote)

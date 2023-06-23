@@ -21,18 +21,53 @@ const creatSql = `CREATE TABLE users (
     UNIQUE (username)
 )`
 
-db.query(creatSql, (err) => {
+//create table polls 1-n options 1-n options_users n-1 users
+const creatSql2 = `CREATE TABLE polls (
+    id INT AUTO_INCREMENT,
+    title VARCHAR(255),
+    description VARCHAR(255),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    createdBy INT,
+    FOREIGN KEY (createdBy) REFERENCES users(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+)`
+const creatSql3 = `CREATE TABLE options (
+    id INT AUTO_INCREMENT,
+    name VARCHAR(255),
+    pollId INT,
+    FOREIGN KEY (pollId) REFERENCES polls(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+)`
+
+const creatSql4 = `CREATE TABLE options_users (
+    id INT AUTO_INCREMENT,
+    optionId INT,
+    userId INT,
+    FOREIGN KEY (optionId) REFERENCES options(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (userId) REFERENCES users(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    PRIMARY KEY (id)
+)`
+
+db.query(creatSql4, (err) => {
     if (err) {
         console.log(err)
         return
     }
 
-    db.query(seedSql, (seedErr) => {
-        if (seedErr) {
-            console.log(seedErr)
-            return
-        }
+    // db.query(seedSql, (seedErr) => {
+    //     if (seedErr) {
+    //         console.log(seedErr)
+    //         return
+    //     }
 
-        console.log('Success init database...')
-    })
+    console.log('Success init database...')
+    // })
 })
